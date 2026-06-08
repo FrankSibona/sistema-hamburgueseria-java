@@ -7,10 +7,12 @@
 ## 👥 Integrantes
 | Nombre | Módulo asignado |
 |--------|----------------|
-| (Tu Nombre) | Arquitectura / Base de Datos |
-| (Compañero 2) | Interfaz de Pedidos |
-| (Compañero 3) | Gestión de Menú (CRUD) |
-| (Compañero 4) | (Completar) |
+| (Franco Sibona) | Arquitectura / Base de Datos |
+| (Compañero 2) | Módulo de Autenticación (Login y Usuarios)|
+| (Compañero 3) | Módulo de Inventario y Menú (CRUD de Productos) |
+| (Compañero 4) | Punto de Venta / Caja (Toma de Pedidos) |
+| (Compañero 5) | Pantalla de Cocina (Gestión de Comandas) |
+| (Compañero 6 | Módulo de Reportes e Historial (Cierre de Caja) |
 
 ---
 
