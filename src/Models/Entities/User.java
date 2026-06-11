@@ -3,14 +3,14 @@ package Models.Entities;
 public class User {
     private final int id;
     private String name;
-    private String password_hash;
+    private String passwordHash;
     private String email;
     private String role;
     // Constructor
-    public User(int id, String name, String password_hash, String email, String role) {
+    public User(int id, String name, String passwordHash, String email, String role) {
         this.id = id;
         this.name = name;
-        this.password_hash = password_hash;
+        this.passwordHash = passwordHash;
         this.email = email;
         this.role = role;
     }
@@ -27,12 +27,12 @@ public class User {
         this.name = name;
     }
 
-    public String getPassword_hash() {
-        return password_hash;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword_hash(String password_hash) {
-        this.password_hash = password_hash;
+    public void setPassword_hash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public String getEmail() {
