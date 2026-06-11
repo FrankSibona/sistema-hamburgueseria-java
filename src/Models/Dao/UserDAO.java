@@ -16,14 +16,13 @@ public class UserDAO {
     public boolean create(User user) {
 
         String sql = """
-                INSERT INTO users
-                (name, password_hash, email, role)
-                VALUES (?, ?, ?, ?)
-                """;
+            INSERT INTO users (name, password_hash, email, role)
+            VALUES (?, ?, ?, ?)
+            """;
 
         try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
 
             stmt.setString(1, user.getName());
@@ -45,8 +44,8 @@ public class UserDAO {
         String sql = "SELECT * FROM users WHERE id = ?";
 
         try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
 
             stmt.setInt(1, id);
@@ -54,16 +53,13 @@ public class UserDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-
-                User user = new User();
-
-                user.setId(rs.getInt("id"));
-                user.setName(rs.getString("name"));
-                user.setPasswordHash(rs.getString("password_hash"));
-                user.setEmail(rs.getString("email"));
-                user.setRole(rs.getString("role"));
-
-                return user;
+                return new User(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("password_hash"),
+                    rs.getString("email"),
+                    rs.getString("role")
+                );
             }
 
         } catch (SQLException e) {
@@ -72,7 +68,38 @@ public class UserDAO {
 
         return null;
     }
+    
+    // Buscar por Email
+    public User findByEmail(String email) {
 
+        String sql = "SELECT * FROM users WHERE email = ?";
+
+        try (
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setString(1, email);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("password_hash"),
+                    rs.getString("email"),
+                    rs.getString("role")
+                );
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error finding user by email: " + e.getMessage());
+        }
+
+        return null;
+    }
+    
     // consultar todo
     public List<User> findAll() {
 
@@ -81,22 +108,20 @@ public class UserDAO {
         String sql = "SELECT * FROM users";
 
         try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()
         ) {
 
             while (rs.next()) {
 
-                User user = new User();
-
-                user.setId(rs.getInt("id"));
-                user.setName(rs.getString("name"));
-                user.setPasswordHash(rs.getString("password_hash"));
-                user.setEmail(rs.getString("email"));
-                user.setRole(rs.getString("role"));
-
-                users.add(user);
+                users.add(new User(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("password_hash"),
+                    rs.getString("email"),
+                    rs.getString("role")
+                ));
             }
 
         } catch (SQLException e) {
@@ -105,7 +130,7 @@ public class UserDAO {
 
         return users;
     }
-
+    
     // modificar
     public boolean update(User user) {
 
@@ -157,36 +182,5 @@ public class UserDAO {
         }
     }
 
-    public User findByEmail(String email) {
 
-        String sql = "SELECT * FROM users WHERE email = ?";
-
-        try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
-        ) {
-
-            stmt.setString(1, email);
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-
-                User user = new User();
-
-                user.setId(rs.getInt("id"));
-                user.setName(rs.getString("name"));
-                user.setPasswordHash(rs.getString("password_hash"));
-                user.setEmail(rs.getString("email"));
-                user.setRole(rs.getString("role"));
-
-                return user;
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error finding user by email: " + e.getMessage());
-        }
-
-        return null;
-    }
 }

@@ -39,14 +39,15 @@ public class ProductDAO {
             return false;
         }
     }
+    
     //buscar un producto por su id
     public Product findById(int id) {
 
         String sql = "SELECT * FROM products WHERE id = ?";
 
         try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
 
             stmt.setInt(1, id);
@@ -55,16 +56,14 @@ public class ProductDAO {
 
             if (rs.next()) {
 
-                Product product = new Product();
-
-                product.setId(rs.getInt("id"));
-                product.setName(rs.getString("name"));
-                product.setStock(rs.getInt("stock"));
-                product.setDescription(rs.getString("description"));
-                product.setPrice(rs.getDouble("price"));
-                product.setCategory(rs.getString("category"));
-
-                return product;
+                return new Product(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getInt("stock"),
+                    rs.getString("description"),
+                    rs.getDouble("price"),
+                    rs.getString("category")
+                );
             }
 
         } catch (SQLException e) {
@@ -82,23 +81,21 @@ public class ProductDAO {
         String sql = "SELECT * FROM products";
 
         try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()
         ) {
 
             while (rs.next()) {
 
-                Product product = new Product();
-
-                product.setId(rs.getInt("id"));
-                product.setName(rs.getString("name"));
-                product.setStock(rs.getInt("stock"));
-                product.setDescription(rs.getString("description"));
-                product.setPrice(rs.getDouble("price"));
-                product.setCategory(rs.getString("category"));
-
-                products.add(product);
+                products.add(new Product(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getInt("stock"),
+                    rs.getString("description"),
+                    rs.getDouble("price"),
+                    rs.getString("category")
+                ));
             }
 
         } catch (SQLException e) {
@@ -108,7 +105,7 @@ public class ProductDAO {
         return products;
     }
 
-    //actualizar un producto existente en la bd
+//actualizar un producto existente en la bd
     public boolean update(Product product) {
 
         String sql = """
