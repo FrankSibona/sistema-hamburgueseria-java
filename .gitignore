@@ -2,3 +2,5 @@ build/
 dist/
 nbproject/private/
 #despues ponemos config.properties aca
+src/config.properties
+src/config.properties
