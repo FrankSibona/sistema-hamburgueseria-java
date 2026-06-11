@@ -1,5 +1,5 @@
 package Models.Dao;
 
-public class UsersDAO {
+public class UserDAO {
     
 }

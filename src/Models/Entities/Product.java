@@ -1,6 +1,6 @@
 package Models.Entities;
 
-public class Products {
+public class Product {
     private int id;
     private String name;
     private int stock;
@@ -9,7 +9,7 @@ public class Products {
     private String category;
 
     // Constructor
-    public Products(int id, String name, int stock, String description, double price, String category) {
+    public Product(int id, String name, int stock, String description, double price, String category) {
         this.id = id;
         this.name = name;
         this.stock = stock;

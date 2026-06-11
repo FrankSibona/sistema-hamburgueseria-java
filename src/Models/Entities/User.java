@@ -1,13 +1,13 @@
 package Models.Entities;
 
-public class Users {
+public class User {
     private final int id;
     private String name;
     private String password_hash;
     private String email;
     private String role;
     // Constructor
-    public Users(int id, String name, String password_hash, String email, String role) {
+    public User(int id, String name, String password_hash, String email, String role) {
         this.id = id;
         this.name = name;
         this.password_hash = password_hash;

@@ -1,6 +1,6 @@
 package Models.Entities;
 import java.time.LocalDate;
-public class Reports {
+public class Report {
     private final int id;
     private LocalDate created_at;
     private int user_id;
@@ -8,7 +8,7 @@ public class Reports {
     private String description;
     
     // Constructor
-    public Reports(int id, LocalDate created_at, int user_id, String report_type, String description) {
+    public Report(int id, LocalDate created_at, int user_id, String report_type, String description) {
         this.id = id;
         this.created_at = created_at;
         this.user_id = user_id;
