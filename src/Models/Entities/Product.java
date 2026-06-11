@@ -19,7 +19,7 @@ public class Product {
         this.category = category;
     }
 
-    // Getters and Setters
+    // Getters y Setters
     public int getId() {
         return id;
     }

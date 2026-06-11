@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ReportDAO {
 
-    // INSERT
+    // Insertar un nuevo informe
     public boolean create(Report report) {
 
         String sql = """
@@ -37,7 +37,7 @@ public class ReportDAO {
         }
     }
 
-    // FIND BY ID
+    // Buscar un informe por ID
     public Report findById(int id) {
 
         String sql = "SELECT * FROM reports WHERE id = ?";
@@ -69,7 +69,7 @@ public class ReportDAO {
         return null;
     }
 
-    // FIND ALL
+    // Ver todos los informes
     public List<Report> findAll() {
 
         List<Report> reports = new ArrayList<>();
@@ -100,7 +100,7 @@ public class ReportDAO {
         return reports;
     }
 
-    // DELETE
+    // Eliminar un informe
     public boolean delete(int id) {
 
         String sql = "DELETE FROM reports WHERE id = ?";
