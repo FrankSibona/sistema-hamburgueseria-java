@@ -12,7 +12,7 @@ import java.util.List;
 
 public class UserDAO {
 
-    // CREATE - insertar usuario
+    // Insertar un nuevo usuario
     public boolean create(User user) {
 
         String sql = """
@@ -38,7 +38,7 @@ public class UserDAO {
         }
     }
 
-    // Buscar por ID
+    // Buscar por ID a un usuario
     public User findById(int id) {
 
         String sql = "SELECT * FROM users WHERE id = ?";
@@ -69,7 +69,7 @@ public class UserDAO {
         return null;
     }
     
-    // Buscar por Email
+    // Buscar por Email a un usuario
     public User findByEmail(String email) {
 
         String sql = "SELECT * FROM users WHERE email = ?";
@@ -100,7 +100,7 @@ public class UserDAO {
         return null;
     }
     
-    // consultar todo
+    // consultar todos los usuarios
     public List<User> findAll() {
 
         List<User> users = new ArrayList<>();
@@ -131,7 +131,7 @@ public class UserDAO {
         return users;
     }
     
-    // modificar
+    // modificar datos de algun usuario
     public boolean update(User user) {
 
         String sql = """
@@ -162,7 +162,7 @@ public class UserDAO {
         }
     }
 
-    // eliminar
+    // eliminar a un usuario
     public boolean delete(int id) {
 
         String sql = "DELETE FROM users WHERE id = ?";
