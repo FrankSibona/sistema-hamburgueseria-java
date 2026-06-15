@@ -2,7 +2,6 @@ package Models.Dao;
 
 import Models.Connection.DBConnection;
 import Models.Entities.Order;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -84,5 +83,43 @@ public class OrderDAO {
         }
 
         return orders;
+    }
+
+    // Obtener una orden por ID (para detalles)
+    public Order findById(int id) {
+
+        String sql = "SELECT * FROM orders WHERE id = ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Order(
+                            rs.getInt("id"),
+                            rs.getString("customer_name"),
+                            rs.getString("customer_lastname"),
+                            rs.getString("phone"),
+                            rs.getString("payment_method"),
+                            rs.getString("delivery_method"),
+                            rs.getString("address"),
+                            rs.getString("house"),
+                            rs.getString("description"),
+                            rs.getString("products"),
+                            rs.getDouble("total"),
+                            rs.getTimestamp("created_at")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving order by ID: " + e.getMessage());
+        }
+
+        return null; 
     }
 }
