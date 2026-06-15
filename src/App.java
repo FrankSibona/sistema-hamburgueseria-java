@@ -1,10 +1,11 @@
+import Controllers.CheckoutController;
 import Controllers.OrderDetailsController;
 import Models.Connection.DBConnection;
 public class App {
 
     public static void main(String[] args) {
         DBConnection.getConnection();
-
+/*
             //-- PRUEBA DE INFORME DE ORDENES ---
             java.awt.EventQueue.invokeLater(new Runnable() {
                 @Override
@@ -15,10 +16,10 @@ public class App {
                     controlador.iniciar();
                 }
             });
+*/
 
 
-
-        /*
+      
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -33,7 +34,7 @@ public class App {
                 controlador.iniciar();
             }
         });
- */
+
     }
 }
 
