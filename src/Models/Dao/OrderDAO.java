@@ -1,77 +1,27 @@
 package Models.Dao;
 
 import Models.Connection.DBConnection;
+import Models.Entities.Order;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
-  * DAO de órdenes (checkout).
-  * Representa las compras realizadas por los usuarios.
-  *
-  * No es un CRUD completo:
-  * - Se crean órdenes en el checkout
-  * - Se consultan para historial
-  * - No se editan normalmente
-  *
-  * Se usa junto con OrderDetailDAO para guardar el carrito.
-  */
 public class OrderDAO {
 
-    // Crear una orden (checkout principal)
-    public int createOrder(String customerName,
-                        String customerLastname,
-                        String paymentMethod,
-                        String deliveryMethod,
-                        String address,
-                        double total) {
+    // Crear una nueva orden (checkout confirmado)
+    public boolean create(Order order) {
 
         String sql = """
                 INSERT INTO orders
-                (customer_name, customer_lastname, payment_method, delivery_method, address, total)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """;
-
-        try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
-        ) {
-
-            stmt.setString(1, customerName);
-            stmt.setString(2, customerLastname);
-            stmt.setString(3, paymentMethod);
-            stmt.setString(4, deliveryMethod);
-            stmt.setString(5, address);
-            stmt.setDouble(6, total);
-
-            int rows = stmt.executeUpdate();
-
-            if (rows > 0) {
-                ResultSet keys = stmt.getGeneratedKeys();
-                if (keys.next()) {
-                    return keys.getInt(1);
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error creating order: " + e.getMessage());
-        }
-
-        return -1;
-    }
-
-    // Agregar item al detalle de la orden
-    public boolean addOrderDetail(int orderId,
-                                int productId,
-                                int quantity,
-                                double price) {
-
-        String sql = """
-                INSERT INTO order_details
-                (order_id, product_id, quantity, price)
-                VALUES (?, ?, ?, ?)
+                (customer_name, customer_lastname, phone,
+                payment_method, delivery_method,
+                address, house, description,
+                products, total)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (
@@ -79,16 +29,60 @@ public class OrderDAO {
                 PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
 
-            stmt.setInt(1, orderId);
-            stmt.setInt(2, productId);
-            stmt.setInt(3, quantity);
-            stmt.setDouble(4, price);
+            stmt.setString(1, order.getCustomerName());
+            stmt.setString(2, order.getCustomerLastname());
+            stmt.setString(3, order.getPhone());
+            stmt.setString(4, order.getPaymentMethod());
+            stmt.setString(5, order.getDeliveryMethod());
+            stmt.setString(6, order.getAddress());
+            stmt.setString(7, order.getHouse());
+            stmt.setString(8, order.getDescription());
+            stmt.setString(9, order.getProducts());
+            stmt.setDouble(10, order.getTotal());
 
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.out.println("Error adding order detail: " + e.getMessage());
+            System.out.println("Error creating order: " + e.getMessage());
             return false;
         }
+    }
+
+    // Obtener todas las órdenes (para informes)
+    public List<Order> findAll() {
+
+        List<Order> orders = new ArrayList<>();
+
+        String sql = "SELECT * FROM orders ORDER BY created_at DESC";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()
+        ) {
+
+            while (rs.next()) {
+
+                orders.add(new Order(
+                        rs.getInt("id"),
+                        rs.getString("customer_name"),
+                        rs.getString("customer_lastname"),
+                        rs.getString("phone"),
+                        rs.getString("payment_method"),
+                        rs.getString("delivery_method"),
+                        rs.getString("address"),
+                        rs.getString("house"),
+                        rs.getString("description"),
+                        rs.getString("products"),
+                        rs.getDouble("total"),
+                        rs.getTimestamp("created_at")
+                ));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving orders: " + e.getMessage());
+        }
+
+        return orders;
     }
 }

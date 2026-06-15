@@ -5,24 +5,49 @@ import java.sql.Timestamp;
 public class Order {
 
     private final int id;
+
     private String customerName;
     private String customerLastname;
+    private String phone;
+
     private String paymentMethod;
     private String deliveryMethod;
+
     private String address;
+    private String house;
+    private String description;
+
+    private String products;
+
     private double total;
+
     private Timestamp createdAt;
 
+
     // Constructor completo
-    public Order(int id, String customerName, String customerLastname,
-                String paymentMethod, String deliveryMethod,
-                String address, double total, Timestamp createdAt) {
+    public Order(int id,
+                String customerName,
+                String customerLastname,
+                String phone,
+                String paymentMethod,
+                String deliveryMethod,
+                String address,
+                String house,
+                String description,
+                String products,
+                double total,
+                Timestamp createdAt) {
+
         this.id = id;
         this.customerName = customerName;
         this.customerLastname = customerLastname;
+        this.phone = phone;
         this.paymentMethod = paymentMethod;
         this.deliveryMethod = deliveryMethod;
         this.address = address;
+        this.house = house;
+        this.description = description;
+        this.products = products;
         this.total = total;
         this.createdAt = createdAt;
     }
@@ -40,6 +65,10 @@ public class Order {
         return customerLastname;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
     public String getPaymentMethod() {
         return paymentMethod;
     }
@@ -52,6 +81,18 @@ public class Order {
         return address;
     }
 
+    public String getHouse() {
+        return house;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getProducts() {
+        return products;
+    }
+
     public double getTotal() {
         return total;
     }
@@ -60,13 +101,17 @@ public class Order {
         return createdAt;
     }
 
-    // Setters (sin id)
+    // Setters
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
 
     public void setCustomerLastname(String customerLastname) {
         this.customerLastname = customerLastname;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public void setPaymentMethod(String paymentMethod) {
@@ -79,6 +124,18 @@ public class Order {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public void setHouse(String house) {
+        this.house = house;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setProducts(String products) {
+        this.products = products;
     }
 
     public void setTotal(double total) {
