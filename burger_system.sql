@@ -37,7 +37,7 @@ CREATE TABLE `orders` (
   `total` decimal(10,2) NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,6 +46,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (1,'Juan','Perez','Efectivo','Delivery','San Martin','123','Sin cebolla en la hamburguesa','Hamburguesa Clasica x2, Papas Fritas Grandes x1, Coca Cola 1.5L x1',28500.00,'2026-06-15 16:40:28'),(2,'Maria','Gonzalez','Tarjeta','Retiro',NULL,NULL,'Retira a las 21:00','Hamburguesa Doble Queso x1, Nuggets x1, Sprite 500ml x1',17400.00,'2026-06-15 16:40:28'),(3,'Carlos','Rodriguez','Mercado Pago','Delivery','Belgrano','456','Tocar timbre dos veces','Hamburguesa Bacon x2, Papas Fritas Medianas x2, Coca Cola 500ml x2',36200.00,'2026-06-15 16:40:28'),(4,'Lucia','Fernandez','Transferencia','Delivery','Rivadavia','890',NULL,'Hamburguesa Veggie x1, Papas Fritas Grandes x1, Agua Mineral x1',15800.00,'2026-06-15 16:40:28'),(5,'Sofia','Martinez','Tarjeta','Retiro',NULL,NULL,'Pedido abonado','Hamburguesa Triple x2, Aros de Cebolla x1, Coca Cola 1.5L x1',39800.00,'2026-06-15 16:40:28');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,4 +144,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-15 16:37:20
+-- Dump completed on 2026-06-15 16:41:01
