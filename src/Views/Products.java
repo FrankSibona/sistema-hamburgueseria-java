@@ -1,4 +1,4 @@
-// Frontend de los Productos
+// Vista del sistema encargada de desplegar y gestionar la pantalla de prodectos.
 public class Products {
     private String name;
     private double price;

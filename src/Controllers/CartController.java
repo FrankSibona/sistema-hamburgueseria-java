@@ -3,11 +3,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Controlador de carrito en Java puro.
- * Su responsabilidad es manejar la lógica del negocio del carrito
- * y delegar el almacenamiento en los DAO del proyecto.
- */
 public class CartController {
 
     private static final double DELIVERY_FEE = 4.50;
