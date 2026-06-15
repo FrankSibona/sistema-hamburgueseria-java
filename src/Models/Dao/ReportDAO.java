@@ -25,8 +25,8 @@ public class ReportDAO {
                 PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
 
-            stmt.setInt(1, report.getUser_id());
-            stmt.setString(2, report.getReport_type());
+            stmt.setInt(1, report.getUserId());
+            stmt.setString(2, report.getReportType());
             stmt.setString(3, report.getDescription());
 
             return stmt.executeUpdate() > 0;
@@ -37,7 +37,7 @@ public class ReportDAO {
         }
     }
 
-    // Buscar un informe por ID
+    // Buscar por ID
     public Report findById(int id) {
 
         String sql = "SELECT * FROM reports WHERE id = ?";
@@ -69,7 +69,7 @@ public class ReportDAO {
         return null;
     }
 
-    // Ver todos los informes
+    // Traer todos
     public List<Report> findAll() {
 
         List<Report> reports = new ArrayList<>();
@@ -100,7 +100,7 @@ public class ReportDAO {
         return reports;
     }
 
-    // Eliminar un informe
+    // Eliminar
     public boolean delete(int id) {
 
         String sql = "DELETE FROM reports WHERE id = ?";
@@ -120,8 +120,7 @@ public class ReportDAO {
         }
     }
 
-
-    // Actualizar un informe existente
+    // Update
     public boolean update(Report report) {
 
         String sql = """
@@ -137,8 +136,8 @@ public class ReportDAO {
                 PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
 
-            stmt.setInt(1, report.getUser_id());
-            stmt.setString(2, report.getReport_type());
+            stmt.setInt(1, report.getUserId());
+            stmt.setString(2, report.getReportType());
             stmt.setString(3, report.getDescription());
             stmt.setInt(4, report.getId());
 
