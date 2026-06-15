@@ -10,6 +10,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+  * DAO de reportes del sistema.
+  * Permite registrar y consultar informes internos.
+  *
+  * Uso:
+  * - Auditoría
+  * - Control interno
+  * - Seguimiento de actividad
+  */
 public class ReportDAO {
 
     // Insertar un nuevo informe

@@ -8,6 +8,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+
+/**
+  * DAO de detalles de órdenes.
+  * Guarda los productos asociados a cada orden (carrito finalizado).
+  *
+  * No funciona de forma independiente:
+  * siempre depende de una Order.
+  */
 public class OrderDetailDAO {
 
     // Insertar items del pedido

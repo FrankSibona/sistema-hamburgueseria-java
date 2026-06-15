@@ -9,6 +9,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+  * DAO de productos.
+  * Maneja el catálogo de productos del sistema.
+  *
+  * Operaciones:
+  * - Crear productos
+  * - Buscar por id
+  * - Listar todos
+  * - Actualizar stock/datos
+  * - Eliminar productos
+  *
+  * Se usa principalmente en:
+  * - Carrito de compras
+  * - Checkout
+  */
 public class ProductDAO {
     // insertar en la bd un nuevo producto
     public boolean create(Product product) {

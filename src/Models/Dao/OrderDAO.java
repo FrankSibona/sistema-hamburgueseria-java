@@ -7,6 +7,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+  * DAO de órdenes (checkout).
+  * Representa las compras realizadas por los usuarios.
+  *
+  * No es un CRUD completo:
+  * - Se crean órdenes en el checkout
+  * - Se consultan para historial
+  * - No se editan normalmente
+  *
+  * Se usa junto con OrderDetailDAO para guardar el carrito.
+  */
 public class OrderDAO {
 
     // Crear una orden (checkout principal)
