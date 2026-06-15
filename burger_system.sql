@@ -18,6 +18,38 @@ USE `burger_system`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `orders` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `customer_name` varchar(100) NOT NULL,
+  `customer_lastname` varchar(100) NOT NULL,
+  `payment_method` varchar(50) NOT NULL,
+  `delivery_method` varchar(50) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `house` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `products` text NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders`
+--
+
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `products`
 --
 
@@ -103,49 +135,6 @@ INSERT INTO `users` VALUES (1,'Juan Perez','hash123','juan@burgerhouse.com','ADM
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
---
--- Table structure for table `orders`
---
-
-DROP TABLE IF EXISTS `orders`;
-CREATE TABLE `orders` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `customer_name` varchar(100) NOT NULL,
-  `customer_lastname` varchar(100) NOT NULL,
-  `payment_method` varchar(50) NOT NULL,
-  `delivery_method` varchar(50) NOT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `total` decimal(10,2) NOT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
---
--- Table structure for table `order_details`
---
-
-DROP TABLE IF EXISTS `order_details`;
-CREATE TABLE `order_details` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `order_id` int NOT NULL,
-  `product_id` int NOT NULL,
-  `quantity` int NOT NULL,
-  `price` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id`),
-
-  KEY `fk_order_details_order` (`order_id`),
-  KEY `fk_order_details_product` (`product_id`),
-
-  CONSTRAINT `fk_order_details_order`
-    FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
-    ON DELETE CASCADE,
-
-  CONSTRAINT `fk_order_details_product`
-    FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -154,4 +143,4 @@ CREATE TABLE `order_details` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-10 22:10:43
+-- Dump completed on 2026-06-15 16:37:20
