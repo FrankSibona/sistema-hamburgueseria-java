@@ -119,4 +119,34 @@ public class ReportDAO {
             return false;
         }
     }
+
+
+    // Actualizar un informe existente
+    public boolean update(Report report) {
+
+        String sql = """
+                UPDATE reports
+                SET user_id = ?,
+                    report_type = ?,
+                    description = ?
+                WHERE id = ?
+                """;
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setInt(1, report.getUser_id());
+            stmt.setString(2, report.getReport_type());
+            stmt.setString(3, report.getDescription());
+            stmt.setInt(4, report.getId());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error updating report: " + e.getMessage());
+            return false;
+        }
+    }
 }

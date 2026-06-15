@@ -103,6 +103,49 @@ INSERT INTO `users` VALUES (1,'Juan Perez','hash123','juan@burgerhouse.com','ADM
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+--
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE `orders` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `customer_name` varchar(100) NOT NULL,
+  `customer_lastname` varchar(100) NOT NULL,
+  `payment_method` varchar(50) NOT NULL,
+  `delivery_method` varchar(50) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+--
+-- Table structure for table `order_details`
+--
+
+DROP TABLE IF EXISTS `order_details`;
+CREATE TABLE `order_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `order_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `quantity` int NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`),
+
+  KEY `fk_order_details_order` (`order_id`),
+  KEY `fk_order_details_product` (`product_id`),
+
+  CONSTRAINT `fk_order_details_order`
+    FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
+    ON DELETE CASCADE,
+
+  CONSTRAINT `fk_order_details_product`
+    FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
