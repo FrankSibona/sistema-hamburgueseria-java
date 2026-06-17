@@ -1,4 +1,3 @@
-
 import Models.Connection.DBConnection;
 public class App {
 
@@ -6,4 +5,3 @@ public class App {
         DBConnection.getConnection();
     }
 }
-
