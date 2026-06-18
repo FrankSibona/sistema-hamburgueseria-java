@@ -131,8 +131,17 @@ public class CheckoutController {
     }
 
     private void abrirInforme(int idOrden) {
-        OrderDetailsController controlador = new OrderDetailsController(new Views.OrderDetails(), idOrden);
-        controlador.iniciar();
+        try {
+            Views.OrderDetails vistaReporte = new Views.OrderDetails();
+            vistaReporte.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            OrderDetailsController controlador = new OrderDetailsController(vistaReporte, idOrden);
+            controlador.iniciar();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                "Error al abrir el informe: " + e,
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void iniciar() {
