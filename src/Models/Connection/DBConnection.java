@@ -31,7 +31,7 @@ public class DBConnection {
 
         String url = properties.getProperty("db.url");
         String user = properties.getProperty("db.user");
-        String password = "Azemol/0317";
+        String password = properties.getProperty("db.password");
 
         try {
             Connection connection = DriverManager.getConnection(url, user, password);

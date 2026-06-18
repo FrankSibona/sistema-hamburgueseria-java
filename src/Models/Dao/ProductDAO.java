@@ -148,6 +148,27 @@ public class ProductDAO {
         }
     }
 
+    public boolean decreaseStock(String productName, int quantity) {
+
+        String sql = "UPDATE products SET stock = stock - ? WHERE name = ? AND stock >= ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setInt(1, quantity);
+            stmt.setString(2, productName);
+            stmt.setInt(3, quantity);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error decreasing stock: " + e.getMessage());
+            return false;
+        }
+    }
+
     //eliminar un producto de la bd por su id
     public boolean delete(int id) {
 

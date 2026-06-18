@@ -1,8 +1,11 @@
 package Controllers;
 
+import Controllers.CartController;
+import Controllers.CartController.CartItem;
+import Models.Dao.OrderDAO;
+import Models.Dao.ProductDAO;
+import Models.Entities.Order;
 import Views.Checkout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
  
@@ -23,7 +26,6 @@ public class CheckoutController {
     }
 
     private void iniciarEventos() {
-        // --- EVENTOS PARA MOSTRAR/OCULTAR ALIAS ---
         vista.rbEfectivo.addActionListener(e -> {
             vista.panelAlias.setVisible(false);
             actualizarPantalla();
@@ -34,7 +36,6 @@ public class CheckoutController {
             actualizarPantalla();
         });
 
-        // --- EVENTOS PARA MOSTRAR/OCULTAR DELIVERY ---
         vista.rbRetiro.addActionListener(e -> {
             vista.panelDelivery.setVisible(false);
             actualizarPantalla();
@@ -45,28 +46,22 @@ public class CheckoutController {
             actualizarPantalla();
         });
 
-        // --- EVENTOS DE BOTONES ---
+   
         vista.btnCancelar.addActionListener(e -> vista.dispose());
         
-        int id = 1;// id de prueba para el informe de orden, hay que reemplazarlo por el real cuando tengamos la lógica
-
-        vista.btnConfirmar.addActionListener(e -> {
-            procesarPedido();
-            abrirInforme(id);
-        });
+        vista.btnConfirmar.addActionListener(e -> procesarPedido());
     }
     private void abrirInforme(int idOrden) {
         OrderDetailsController controlador = new OrderDetailsController(new Views.OrderDetails(), idOrden);
         controlador.iniciar();
     }
-    //Método para que la ventana se reacomode cuando mostramos paneles nuevos
+   
     private void actualizarPantalla() {
         SwingUtilities.updateComponentTreeUI(vista);
-        vista.pack(); // Ajusta el tamaño de la ventana al contenido visible
+        vista.pack(); 
     }
 
     private void procesarPedido() {
-        // 1. Validar campos obligatorios siempre visibles
         String nombre = vista.txtNombre.getText().trim();
         String apellido = vista.txtApellido.getText().trim();
 
@@ -78,7 +73,6 @@ public class CheckoutController {
         String metodoPago = vista.rbEfectivo.isSelected() ? "Efectivo" : "Transferencia";
         String metodoEntrega = vista.rbRetiro.isSelected() ? "Retira por local" : "Delivery";
 
-        // 2. Validar campos de delivery si seleccionó delivery
         String direccion = "";
         String casaDepto = "";
         String obs = "";
@@ -94,19 +88,44 @@ public class CheckoutController {
             }
         }
 
-        // --- ACÁ VA LA LÓGICA DE BASE DE DATOS (INSERT) ---
-        // Tenemos que mandar todas estas variables al PedidoDAO
-        
-        // Mensaje de éxito de prueba
-        String resumen = "Pedido confirmado a nombre de: " + nombre + " " + apellido + "\n"
-                       + "Pago: " + metodoPago + "\n"
-                       + "Entrega: " + metodoEntrega;
-                       
-        if(vista.rbDelivery.isSelected()){
-             resumen += "\nEnviar a: " + direccion + " (" + casaDepto + ")";
+        CartController carrito = CartController.getInstance();
+
+        StringBuilder productosStr = new StringBuilder();
+        for (CartItem item : carrito.getItems()) {
+            if (productosStr.length() > 0) productosStr.append(", ");
+            productosStr.append(item.getProductName()).append(" x").append(item.getQuantity());
         }
 
-        JOptionPane.showMessageDialog(vista, resumen, "¡Éxito!", JOptionPane.INFORMATION_MESSAGE);
+        Order orden = new Order(0, nombre, apellido, "", metodoPago, metodoEntrega,
+                direccion, casaDepto, obs, productosStr.toString(), totalCarrito, null);
+
+        OrderDAO orderDAO = new OrderDAO();
+        boolean guardado = orderDAO.create(orden);
+
+        if (!guardado) {
+            JOptionPane.showMessageDialog(vista, "Error al guardar el pedido en la base de datos.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ProductDAO productDAO = new ProductDAO();
+        for (CartItem item : carrito.getItems()) {
+            productDAO.decreaseStock(item.getProductName(), item.getQuantity());
+        }
+
+        carrito.clearCart();
+
+        String resumen = "Pedido confirmado a nombre de: " + nombre + " " + apellido + "\n"
+                       + "Pago: " + metodoPago + "\n"
+                       + "Entrega: " + metodoEntrega + "\n"
+                       + "Productos: " + productosStr + "\n"
+                       + String.format("Total: $%.2f", totalCarrito);
+
+        if (vista.rbDelivery.isSelected()) {
+            resumen += "\nEnviar a: " + direccion + " (" + casaDepto + ")";
+        }
+
+        JOptionPane.showMessageDialog(vista, resumen, "Pedido registrado", JOptionPane.INFORMATION_MESSAGE);
         vista.dispose();
     }
 

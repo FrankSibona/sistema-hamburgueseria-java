@@ -11,10 +11,19 @@ public class CartController {
     private static final double DELIVERY_FEE = 4.50;
     private static final double SERVICE_FEE = 2.00;
 
+    private static CartController instance;
+
     private final List<CartItem> items;
 
     public CartController() {
         this.items = new ArrayList<>();
+    }
+
+    public static CartController getInstance() {
+        if (instance == null) {
+            instance = new CartController();
+        }
+        return instance;
     }
 
     public static class CartItem {
@@ -74,6 +83,16 @@ public class CartController {
     public void addProduct(String name, double price, int quantity) {
         Product product = new Product(0, name, 0, "", price, "");
         addProduct(product, quantity);
+    }
+
+    public void updateItemQuantity(int index, int newQuantity) {
+        if (index >= 0 && index < items.size()) {
+            if (newQuantity <= 0) {
+                items.remove(index);
+            } else {
+                items.get(index).setQuantity(newQuantity);
+            }
+        }
     }
 
     public void removeItem(int index) {

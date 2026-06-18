@@ -18,9 +18,8 @@ public class OrderDAO {
                 INSERT INTO orders
                 (customer_name, customer_lastname, phone,
                 payment_method, delivery_method,
-                address, house, description,
-                products, total)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                address, total)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (
@@ -34,10 +33,7 @@ public class OrderDAO {
             stmt.setString(4, order.getPaymentMethod());
             stmt.setString(5, order.getDeliveryMethod());
             stmt.setString(6, order.getAddress());
-            stmt.setString(7, order.getHouse());
-            stmt.setString(8, order.getDescription());
-            stmt.setString(9, order.getProducts());
-            stmt.setDouble(10, order.getTotal());
+            stmt.setDouble(7, order.getTotal());
 
             return stmt.executeUpdate() > 0;
 

@@ -22,7 +22,7 @@ public class HomeController {
     public void cargarProductos() {
         // 1. El controlador va a la base de datos (DAO) y se trae todas las hamburguesas
         List<Product> listaProductos = productDAO.findAll();
-        
+
         // 2. Le pasamos esa lista llena de datos al método nuevo que creaste en la Vista
         // para que dibuje los recuadros en la pantalla
         vistaHome.mostrarProductosEnPantalla(listaProductos);
