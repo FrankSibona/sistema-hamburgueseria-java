@@ -148,6 +148,29 @@ public class ProductDAO {
         }
     }
 
+    public int getStockByName(String productName) {
+
+        String sql = "SELECT stock FROM products WHERE name = ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setString(1, productName);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("stock");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error getting stock: " + e.getMessage());
+        }
+
+        return -1;
+    }
+
     public boolean decreaseStock(String productName, int quantity) {
 
         String sql = "UPDATE products SET stock = stock - ? WHERE name = ? AND stock >= ?";

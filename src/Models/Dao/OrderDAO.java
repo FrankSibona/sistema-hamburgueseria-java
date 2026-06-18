@@ -11,20 +11,20 @@ import java.util.List;
 
 public class OrderDAO {
 
-    // Crear una nueva orden (checkout confirmado)
-    public boolean create(Order order) {
+    // Crear una nueva orden (checkout confirmado). Retorna el ID generado, o -1 si falla.
+    public int create(Order order) {
 
         String sql = """
                 INSERT INTO orders
                 (customer_name, customer_lastname, phone,
                 payment_method, delivery_method,
-                address, total)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                address, house, description, products, total)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (
                 Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
+                PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
 
             stmt.setString(1, order.getCustomerName());
@@ -33,13 +33,24 @@ public class OrderDAO {
             stmt.setString(4, order.getPaymentMethod());
             stmt.setString(5, order.getDeliveryMethod());
             stmt.setString(6, order.getAddress());
-            stmt.setDouble(7, order.getTotal());
+            stmt.setString(7, order.getHouse());
+            stmt.setString(8, order.getDescription());
+            stmt.setString(9, order.getProducts());
+            stmt.setDouble(10, order.getTotal());
 
-            return stmt.executeUpdate() > 0;
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                try (ResultSet keys = stmt.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        return keys.getInt(1);
+                    }
+                }
+            }
+            return -1;
 
         } catch (SQLException e) {
             System.out.println("Error creating order: " + e.getMessage());
-            return false;
+            return -1;
         }
     }
 

@@ -89,6 +89,24 @@ public class CheckoutController {
         }
 
         CartController carrito = CartController.getInstance();
+        ProductDAO productDAO = new ProductDAO();
+
+        for (CartItem item : carrito.getItems()) {
+            int stockActual = productDAO.getStockByName(item.getProductName());
+            if (stockActual < 0) {
+                JOptionPane.showMessageDialog(vista,
+                        "No se encontró el producto: " + item.getProductName(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (stockActual < item.getQuantity()) {
+                JOptionPane.showMessageDialog(vista,
+                        "Stock insuficiente para \"" + item.getProductName() + "\".\n"
+                        + "Disponible: " + stockActual + ", pedido: " + item.getQuantity(),
+                        "Sin stock", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
 
         StringBuilder productosStr = new StringBuilder();
         for (CartItem item : carrito.getItems()) {
@@ -100,33 +118,22 @@ public class CheckoutController {
                 direccion, casaDepto, obs, productosStr.toString(), totalCarrito, null);
 
         OrderDAO orderDAO = new OrderDAO();
-        boolean guardado = orderDAO.create(orden);
+        int idOrden = orderDAO.create(orden);
 
-        if (!guardado) {
+        if (idOrden < 0) {
             JOptionPane.showMessageDialog(vista, "Error al guardar el pedido en la base de datos.",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        ProductDAO productDAO = new ProductDAO();
         for (CartItem item : carrito.getItems()) {
             productDAO.decreaseStock(item.getProductName(), item.getQuantity());
         }
 
         carrito.clearCart();
 
-        String resumen = "Pedido confirmado a nombre de: " + nombre + " " + apellido + "\n"
-                       + "Pago: " + metodoPago + "\n"
-                       + "Entrega: " + metodoEntrega + "\n"
-                       + "Productos: " + productosStr + "\n"
-                       + String.format("Total: $%.2f", totalCarrito);
-
-        if (vista.rbDelivery.isSelected()) {
-            resumen += "\nEnviar a: " + direccion + " (" + casaDepto + ")";
-        }
-
-        JOptionPane.showMessageDialog(vista, resumen, "Pedido registrado", JOptionPane.INFORMATION_MESSAGE);
         vista.dispose();
+        abrirInforme(idOrden);
     }
 
     public void iniciar() {
