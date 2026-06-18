@@ -48,9 +48,17 @@ public class CheckoutController {
         // --- EVENTOS DE BOTONES ---
         vista.btnCancelar.addActionListener(e -> vista.dispose());
         
-        vista.btnConfirmar.addActionListener(e -> procesarPedido());
-    }
+        int id = 1;// id de prueba para el informe de orden, hay que reemplazarlo por el real cuando tengamos la lógica
 
+        vista.btnConfirmar.addActionListener(e -> {
+            procesarPedido();
+            abrirInforme(id);
+        });
+    }
+    private void abrirInforme(int idOrden) {
+        OrderDetailsController controlador = new OrderDetailsController(new Views.OrderDetails(), idOrden);
+        controlador.iniciar();
+    }
     //Método para que la ventana se reacomode cuando mostramos paneles nuevos
     private void actualizarPantalla() {
         SwingUtilities.updateComponentTreeUI(vista);
