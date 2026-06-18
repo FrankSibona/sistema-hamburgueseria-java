@@ -5,27 +5,22 @@ import java.awt.*;
 
 public class Checkout extends JFrame {
 
-    // Campos permanentes
     public JTextField txtNombre;
     public JTextField txtApellido;
     
-    // Opciones de Pago
     public JRadioButton rbEfectivo;
     public JRadioButton rbTransferencia;
-    public JPanel panelAlias; // Panel que se oculta/muestra
+    public JPanel panelAlias; 
     public JLabel lblAliasDatos;
     
-    // Opciones de Entrega
     public JRadioButton rbRetiro;
     public JRadioButton rbDelivery;
-    public JPanel panelDelivery; // Panel que se oculta/muestra
+    public JPanel panelDelivery;
     
-    // Campos de Delivery
     public JTextField txtDireccion;
     public JTextField txtCasaDepto;
     public JTextArea txtObservaciones;
     
-    // Botones finales
     public JButton btnConfirmar;
     public JButton btnCancelar;
     public JLabel lblTotal;
@@ -36,12 +31,10 @@ public class Checkout extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         
-        // Usamos un contenedor principal con BoxLayout vertical
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // --- 1. DATOS PERSONALES ---
         JPanel pnlDatos = new JPanel(new GridLayout(2, 2, 5, 5));
         pnlDatos.setBorder(BorderFactory.createTitledBorder("Datos Personales"));
         pnlDatos.add(new JLabel("Nombre:"));
@@ -52,7 +45,6 @@ public class Checkout extends JFrame {
         pnlDatos.add(txtApellido);
         panelPrincipal.add(pnlDatos);
 
-        // --- 2. MÉTODO DE PAGO ---
         JPanel pnlPago = new JPanel(new FlowLayout(FlowLayout.LEFT));
         pnlPago.setBorder(BorderFactory.createTitledBorder("Método de Pago"));
         rbEfectivo = new JRadioButton("Efectivo", true); // Seleccionado por defecto
@@ -64,7 +56,6 @@ public class Checkout extends JFrame {
         pnlPago.add(rbTransferencia);
         panelPrincipal.add(pnlPago);
 
-        // Panel de Alias (Oculto por defecto)
         panelAlias = new JPanel(new FlowLayout(FlowLayout.LEFT));
         lblAliasDatos = new JLabel("<html><b>Alias:</b> hamburgueseria.mp<br><b>CBU:</b> 0000111122223333444455</html>");
         lblAliasDatos.setForeground(new Color(0, 102, 204));
@@ -72,7 +63,6 @@ public class Checkout extends JFrame {
         panelAlias.setVisible(false); // Arranca oculto
         panelPrincipal.add(panelAlias);
 
-        // --- 3. MÉTODO DE ENTREGA ---
         JPanel pnlEntrega = new JPanel(new FlowLayout(FlowLayout.LEFT));
         pnlEntrega.setBorder(BorderFactory.createTitledBorder("Método de Entrega"));
         rbRetiro = new JRadioButton("Retirar por el local", true); // Seleccionado por defecto
@@ -84,7 +74,6 @@ public class Checkout extends JFrame {
         pnlEntrega.add(rbDelivery);
         panelPrincipal.add(pnlEntrega);
 
-        // Panel de Datos de Delivery (Oculto por defecto)
         panelDelivery = new JPanel(new GridLayout(3, 2, 5, 5));
         panelDelivery.setBorder(BorderFactory.createTitledBorder("Datos de Envío"));
         
@@ -104,7 +93,6 @@ public class Checkout extends JFrame {
         panelDelivery.setVisible(false); // Arranca oculto
         panelPrincipal.add(panelDelivery);
 
-        // --- 4. TOTAL Y BOTONES ---
         JPanel pnlBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         lblTotal = new JLabel("Total: $ 0.00   ");
         lblTotal.setFont(new Font("Arial", Font.BOLD, 16));
@@ -118,7 +106,6 @@ public class Checkout extends JFrame {
         pnlBotones.add(btnCancelar);
         pnlBotones.add(btnConfirmar);
         
-        // Agregar todo a la ventana
         add(panelPrincipal, BorderLayout.CENTER);
         add(pnlBotones, BorderLayout.SOUTH);
     }

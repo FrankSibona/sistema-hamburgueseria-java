@@ -139,21 +139,4 @@ public class CheckoutController {
     public void iniciar() {
         vista.setVisible(true);
     }
-    // --- MÉTODO TEMPORAL PARA PROBAR LA PANTALLA ---
-    public static void main(String[] args) {
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                // 1. Creamos la vista
-                Views.Checkout vistaDePrueba = new Views.Checkout();
-                
-                // 2. Simulamos que el carrito tenía $ 8500.50 en hamburguesas
-                double totalSimulado = 8500.50; 
-                
-                // 3. Arrancamos el controlador
-                CheckoutController controlador = new CheckoutController(vistaDePrueba, totalSimulado);
-                controlador.iniciar();
-            }
-        });
-    }
 }

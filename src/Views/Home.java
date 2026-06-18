@@ -6,6 +6,7 @@ import Controllers.HomeController;
 import Controllers.CheckoutController;
 import Models.Entities.Product;
 import java.awt.*;
+import java.io.File;
 import java.util.List;
 import javax.swing.*;
 
@@ -71,20 +72,71 @@ public class Home extends JFrame {
 
     public void mostrarProductosEnPantalla(List<Product> productos) {
         panelProductos.removeAll();
+        panelProductos.setLayout(new GridLayout(0, 3, 15, 15));
+        panelProductos.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         for (Product prod : productos) {
-            JPanel tarjeta = new JPanel(new BorderLayout());
-            tarjeta.setBorder(BorderFactory.createTitledBorder(prod.getName()));
+            JPanel tarjeta = new JPanel();
+            tarjeta.setPreferredSize(new Dimension(200, 280));
+            tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+            tarjeta.setLayout(null);
 
-            JPanel panelInfo = new JPanel(new GridLayout(2, 1));
-            panelInfo.add(new JLabel(" Ingredientes: " + prod.getDescription()));
-            panelInfo.add(new JLabel(" Precio: $" + prod.getPrice()));
-            tarjeta.add(panelInfo, BorderLayout.CENTER);
+            // Foto del producto
+            JLabel lblFoto = new JLabel("", SwingConstants.CENTER);
+            lblFoto.setBounds(10, 10, 180, 120);
+            lblFoto.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-            JPanel panelDerecho = new JPanel();
-            panelDerecho.setLayout(new BoxLayout(panelDerecho, BoxLayout.Y_AXIS));
+            String rutaImagenBase = "src/images/";
+            String nombreImagenDB = prod.getImagePath();
 
-            JButton btnAgregar = new JButton("Agregar al carrito");
+            if (nombreImagenDB != null && !nombreImagenDB.isEmpty()) {
+                String rutaCompleta = rutaImagenBase + nombreImagenDB;
+                File archivoFoto = new File(rutaCompleta);
+
+                if (archivoFoto.exists()) {
+                    try {
+                        ImageIcon iconOriginal = new ImageIcon(rutaCompleta);
+                        Image imgEscalada = iconOriginal.getImage().getScaledInstance(
+                                lblFoto.getWidth(), lblFoto.getHeight(), Image.SCALE_SMOOTH);
+                        lblFoto.setIcon(new ImageIcon(imgEscalada));
+                    } catch (Exception e) {
+                        lblFoto.setText("Error Imagen");
+                        lblFoto.setForeground(Color.RED);
+                    }
+                } else {
+                    lblFoto.setText("<html><center>FOTO NO<br>ENCONTRADA</center></html>");
+                    lblFoto.setForeground(Color.GRAY);
+                    lblFoto.setBackground(new Color(240, 240, 240));
+                    lblFoto.setOpaque(true);
+                }
+            } else {
+                lblFoto.setText("Sin Foto");
+                lblFoto.setForeground(Color.LIGHT_GRAY);
+                lblFoto.setBackground(new Color(240, 240, 240));
+                lblFoto.setOpaque(true);
+            }
+            tarjeta.add(lblFoto);
+
+            // Nombre
+            JLabel lblNombre = new JLabel(prod.getName());
+            lblNombre.setBounds(10, 140, 180, 20);
+            lblNombre.setFont(new Font("Tahoma", Font.BOLD, 14));
+            tarjeta.add(lblNombre);
+
+            // Descripcion
+            JLabel lblDesc = new JLabel("<html>" + prod.getDescription() + "</html>");
+            lblDesc.setBounds(10, 160, 180, 40);
+            tarjeta.add(lblDesc);
+
+            // Precio
+            JLabel lblPrecio = new JLabel("$" + prod.getPrice());
+            lblPrecio.setBounds(10, 210, 180, 20);
+            lblPrecio.setFont(new Font("Tahoma", Font.BOLD, 16));
+            tarjeta.add(lblPrecio);
+
+            // Boton agregar al carrito
+            JButton btnAgregar = new JButton("Agregar al Carrito");
+            btnAgregar.setBounds(10, 240, 180, 30);
             Product productoActual = prod;
             btnAgregar.addActionListener(ev -> {
                 CartController.getInstance().addProduct(productoActual, 1);
@@ -92,25 +144,8 @@ public class Home extends JFrame {
                         productoActual.getName() + " agregado al carrito",
                         "Agregado", JOptionPane.INFORMATION_MESSAGE);
             });
-            JPanel panelBtnAgregar = new JPanel(new FlowLayout());
-            panelBtnAgregar.add(btnAgregar);
-            panelDerecho.add(panelBtnAgregar);
+            tarjeta.add(btnAgregar);
 
-            JButton btnDetalles = new JButton("Ver detalles");
-            btnDetalles.addActionListener(ev -> {
-                String detalles = "Nombre: " + productoActual.getName()
-                        + "\nDescripción: " + productoActual.getDescription()
-                        + "\nPrecio: $" + productoActual.getPrice()
-                        + "\nCategoría: " + productoActual.getCategory()
-                        + "\nStock: " + productoActual.getStock();
-                JOptionPane.showMessageDialog(this, detalles,
-                        productoActual.getName(), JOptionPane.INFORMATION_MESSAGE);
-            });
-            JPanel panelBtnDetalles = new JPanel(new FlowLayout());
-            panelBtnDetalles.add(btnDetalles);
-            panelDerecho.add(panelBtnDetalles);
-
-            tarjeta.add(panelDerecho, BorderLayout.EAST);
             panelProductos.add(tarjeta);
         }
 
