@@ -2,20 +2,6 @@
 **Aplicación de escritorio para toma de pedidos y control de stock**
 > Materia: Programación II
 
----
-
-## 👥 Integrantes
-| Nombre | Módulo asignado |
-|--------|----------------|
-| (Franco Sibona) | Arquitectura / Base de Datos |
-| (Compañero 2) | Módulo de Autenticación (Login y Usuarios)|
-| (Compañero 3) | Módulo de Inventario y Menú (CRUD de Productos) |
-| (Compañero 4) | Punto de Venta / Caja (Toma de Pedidos) |
-| (Compañero 5) | Pantalla de Cocina (Gestión de Comandas) |
-| (Compañero 6 | Módulo de Reportes e Historial (Cierre de Caja) |
-
----
-
 ## 🏗️ Arquitectura
 El proyecto sigue el patrón **MVC (Modelo-Vista-Controlador)** con **DAO**:
 ```text
