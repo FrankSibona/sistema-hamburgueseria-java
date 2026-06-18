@@ -9,30 +9,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
-  * DAO de productos.
-  * Maneja el catálogo de productos del sistema.
-  *
-  * Operaciones:
-  * - Crear productos
-  * - Buscar por id
-  * - Listar todos
-  * - Actualizar stock/datos
-  * - Eliminar productos
-  *
-  * Se usa principalmente en:
-  * - Carrito de compras
-  * - Checkout
-  */
+ * DAO de productos.
+ * Maneja el catálogo de productos del sistema.
+ */
 public class ProductDAO {
+    
     // insertar en la bd un nuevo producto
     public boolean create(Product product) {
 
         String sql = """
                 INSERT INTO products
-                (name, stock, description, price, category)
-                VALUES (?, ?, ?, ?, ?)
+                (name, stock, description, price, category, image_path)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
         try (
@@ -45,6 +34,7 @@ public class ProductDAO {
             stmt.setString(3, product.getDescription());
             stmt.setDouble(4, product.getPrice());
             stmt.setString(5, product.getCategory());
+            stmt.setString(6, product.getImagePath()); // Agregamos la ruta de la foto
 
             int rowsAffected = stmt.executeUpdate();
 
@@ -78,7 +68,8 @@ public class ProductDAO {
                     rs.getInt("stock"),
                     rs.getString("description"),
                     rs.getDouble("price"),
-                    rs.getString("category")
+                    rs.getString("category"),
+                    rs.getString("image_path") // Leemos la foto de la BD
                 );
             }
 
@@ -110,7 +101,8 @@ public class ProductDAO {
                     rs.getInt("stock"),
                     rs.getString("description"),
                     rs.getDouble("price"),
-                    rs.getString("category")
+                    rs.getString("category"),
+                    rs.getString("image_path") // Leemos la foto de la BD
                 ));
             }
 
@@ -121,7 +113,7 @@ public class ProductDAO {
         return products;
     }
 
-//actualizar un producto existente en la bd
+    //actualizar un producto existente en la bd
     public boolean update(Product product) {
 
         String sql = """
@@ -130,7 +122,8 @@ public class ProductDAO {
                     stock = ?,
                     description = ?,
                     price = ?,
-                    category = ?
+                    category = ?,
+                    image_path = ?
                 WHERE id = ?
                 """;
 
@@ -144,7 +137,8 @@ public class ProductDAO {
             stmt.setString(3, product.getDescription());
             stmt.setDouble(4, product.getPrice());
             stmt.setString(5, product.getCategory());
-            stmt.setInt(6, product.getId());
+            stmt.setString(6, product.getImagePath()); // Actualizamos la foto
+            stmt.setInt(7, product.getId()); // El ID pasa a ser el parámetro 7
 
             return stmt.executeUpdate() > 0;
 
