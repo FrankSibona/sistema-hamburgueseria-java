@@ -7,9 +7,13 @@ public class Product {
     private String description;
     private double price;
     private String category;
+    private String imagePath; // Faltaba declarar la variable acá
 
-    // Constructor
+    // Constructor vacío (Siempre es buena práctica tenerlo)
+    public Product() {
+    }
 
+    // Constructor de 6 parámetros (Para NO romper el CartController de tus compañeros)
     public Product(int id, String name, int stock, String description, double price, String category) {
         this.id = id;
         this.name = name;
@@ -17,6 +21,17 @@ public class Product {
         this.description = description;
         this.price = price;
         this.category = category;
+    }
+
+    // Constructor de 7 parámetros (El tuyo, con la foto incluida)
+    public Product(int id, String name, int stock, String description, double price, String category, String imagePath) {
+        this.id = id;
+        this.name = name;
+        this.stock = stock;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.imagePath = imagePath; // Faltaba guardar el dato acá
     }
 
     // Getters y Setters
@@ -66,5 +81,13 @@ public class Product {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

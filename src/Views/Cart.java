@@ -1,3 +1,6 @@
+package Views;
+
+import Controllers.CartController;
 import Models.Entities.Product;
 import java.awt.BorderLayout;
 import java.awt.Color;
