@@ -11,7 +11,6 @@ import java.util.List;
 
 public class OrderDAO {
 
-    // Crear una nueva orden (checkout confirmado). Retorna el ID generado, o -1 si falla.
     public int create(Order order) {
 
         String sql = """
@@ -54,7 +53,6 @@ public class OrderDAO {
         }
     }
 
-    // Obtener todas las órdenes (para informes)
     public List<Order> findAll() {
 
         List<Order> orders = new ArrayList<>();
@@ -92,7 +90,6 @@ public class OrderDAO {
         return orders;
     }
 
-    // Obtener una orden por ID (para detalles)
     public Order findById(int id) {
 
         String sql = "SELECT * FROM orders WHERE id = ?";
@@ -127,6 +124,6 @@ public class OrderDAO {
             System.out.println("Error retrieving order by ID: " + e.getMessage());
         }
 
-        return null; 
+        return null;
     }
 }

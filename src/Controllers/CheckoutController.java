@@ -8,8 +8,6 @@ import Models.Entities.Order;
 import Views.Checkout;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
- 
-
 
 public class CheckoutController {
 
@@ -19,9 +17,9 @@ public class CheckoutController {
     public CheckoutController(Checkout vista, double totalCarrito) {
         this.vista = vista;
         this.totalCarrito = totalCarrito;
-        
+
         this.vista.lblTotal.setText(String.format("Total: $ %.2f   ", totalCarrito));
-        
+
         iniciarEventos();
     }
 
@@ -46,27 +44,23 @@ public class CheckoutController {
             actualizarPantalla();
         });
 
-   
         vista.btnCancelar.addActionListener(e -> vista.dispose());
-        
+
         vista.btnConfirmar.addActionListener(e -> procesarPedido());
     }
-    private void abrirInforme(int idOrden) {
-        OrderDetailsController controlador = new OrderDetailsController(new Views.OrderDetails(), idOrden);
-        controlador.iniciar();
-    }
-   
+
     private void actualizarPantalla() {
         SwingUtilities.updateComponentTreeUI(vista);
-        vista.pack(); 
+        vista.pack();
     }
 
     private void procesarPedido() {
         String nombre = vista.txtNombre.getText().trim();
         String apellido = vista.txtApellido.getText().trim();
+        String telefono = vista.txtTelefono.getText().trim();
 
-        if (nombre.isEmpty() || apellido.isEmpty()) {
-            JOptionPane.showMessageDialog(vista, "El nombre y apellido son obligatorios.", "Error", JOptionPane.WARNING_MESSAGE);
+        if (nombre.isEmpty() || apellido.isEmpty() || telefono.isEmpty()) {
+            JOptionPane.showMessageDialog(vista, "El nombre, apellido y teléfono son obligatorios.", "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -114,7 +108,7 @@ public class CheckoutController {
             productosStr.append(item.getProductName()).append(" x").append(item.getQuantity());
         }
 
-        Order orden = new Order(0, nombre, apellido, "", metodoPago, metodoEntrega,
+        Order orden = new Order(0, nombre, apellido, telefono, metodoPago, metodoEntrega,
                 direccion, casaDepto, obs, productosStr.toString(), totalCarrito, null);
 
         OrderDAO orderDAO = new OrderDAO();
@@ -136,24 +130,12 @@ public class CheckoutController {
         abrirInforme(idOrden);
     }
 
+    private void abrirInforme(int idOrden) {
+        OrderDetailsController controlador = new OrderDetailsController(new Views.OrderDetails(), idOrden);
+        controlador.iniciar();
+    }
+
     public void iniciar() {
         vista.setVisible(true);
-    }
-    // --- MÉTODO TEMPORAL PARA PROBAR LA PANTALLA ---
-    public static void main(String[] args) {
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                // 1. Creamos la vista
-                Views.Checkout vistaDePrueba = new Views.Checkout();
-                
-                // 2. Simulamos que el carrito tenía $ 8500.50 en hamburguesas
-                double totalSimulado = 8500.50; 
-                
-                // 3. Arrancamos el controlador
-                CheckoutController controlador = new CheckoutController(vistaDePrueba, totalSimulado);
-                controlador.iniciar();
-            }
-        });
     }
 }
