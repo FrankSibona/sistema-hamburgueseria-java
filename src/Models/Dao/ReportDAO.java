@@ -10,6 +10,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+  * DAO de reportes del sistema.
+  * Permite registrar y consultar informes internos.
+  *
+  * Uso:
+  * - Auditoría
+  * - Control interno
+  * - Seguimiento de actividad
+  */
 public class ReportDAO {
 
     // Insertar un nuevo informe
@@ -25,8 +35,8 @@ public class ReportDAO {
                 PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
 
-            stmt.setInt(1, report.getUser_id());
-            stmt.setString(2, report.getReport_type());
+            stmt.setInt(1, report.getUserId());
+            stmt.setString(2, report.getReportType());
             stmt.setString(3, report.getDescription());
 
             return stmt.executeUpdate() > 0;
@@ -37,7 +47,7 @@ public class ReportDAO {
         }
     }
 
-    // Buscar un informe por ID
+    // Buscar por ID
     public Report findById(int id) {
 
         String sql = "SELECT * FROM reports WHERE id = ?";
@@ -69,7 +79,7 @@ public class ReportDAO {
         return null;
     }
 
-    // Ver todos los informes
+    // Traer todos
     public List<Report> findAll() {
 
         List<Report> reports = new ArrayList<>();
@@ -100,7 +110,7 @@ public class ReportDAO {
         return reports;
     }
 
-    // Eliminar un informe
+    // Eliminar
     public boolean delete(int id) {
 
         String sql = "DELETE FROM reports WHERE id = ?";
@@ -116,6 +126,35 @@ public class ReportDAO {
 
         } catch (SQLException e) {
             System.out.println("Error deleting report: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // Update
+    public boolean update(Report report) {
+
+        String sql = """
+                UPDATE reports
+                SET user_id = ?,
+                    report_type = ?,
+                    description = ?
+                WHERE id = ?
+                """;
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setInt(1, report.getUserId());
+            stmt.setString(2, report.getReportType());
+            stmt.setString(3, report.getDescription());
+            stmt.setInt(4, report.getId());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error updating report: " + e.getMessage());
             return false;
         }
     }

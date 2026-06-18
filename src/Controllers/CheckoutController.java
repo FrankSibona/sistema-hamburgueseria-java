@@ -1,29 +1,25 @@
 package Controllers;
 
+import Controllers.CartController;
+import Controllers.CartController.CartItem;
+import Models.Dao.OrderDAO;
+import Models.Dao.ProductDAO;
+import Models.Entities.Order;
 import Views.Checkout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import Models.Dao.OrderDAO;
-import java.util.List;
-import Models.Entities.Product;
-
- 
 
 public class CheckoutController {
 
     private Checkout vista;
     private double totalCarrito;
-    private List<Product> listaCarrito;
 
-    public CheckoutController(Checkout vista, double totalCarrito, List<Product> listaCarrito) {
+    public CheckoutController(Checkout vista, double totalCarrito) {
         this.vista = vista;
         this.totalCarrito = totalCarrito;
-        this.listaCarrito = listaCarrito;
-        
+
         this.vista.lblTotal.setText(String.format("Total: $ %.2f   ", totalCarrito));
-        
+
         iniciarEventos();
     }
 
@@ -49,13 +45,13 @@ public class CheckoutController {
         });
 
         vista.btnCancelar.addActionListener(e -> vista.dispose());
-        
+
         vista.btnConfirmar.addActionListener(e -> procesarPedido());
     }
 
     private void actualizarPantalla() {
         SwingUtilities.updateComponentTreeUI(vista);
-        vista.pack(); 
+        vista.pack();
     }
 
     private void procesarPedido() {
@@ -64,7 +60,7 @@ public class CheckoutController {
         String telefono = vista.txtTelefono.getText().trim();
 
         if (nombre.isEmpty() || apellido.isEmpty() || telefono.isEmpty()) {
-            JOptionPane.showMessageDialog(vista, "El nombre y apellido son obligatorios.", "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(vista, "El nombre, apellido y teléfono son obligatorios.", "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -86,31 +82,57 @@ public class CheckoutController {
             }
         }
 
-        OrderDAO dao = new OrderDAO();
-        boolean guardado = dao.registrarVenta(
-            nombre, apellido, telefono, metodoPago, metodoEntrega, 
-            (direccion + " " + casaDepto + " " + obs).trim(), 
-            totalCarrito, listaCarrito
-        );
+        CartController carrito = CartController.getInstance();
+        ProductDAO productDAO = new ProductDAO();
 
-        if (guardado) {
-            JOptionPane.showMessageDialog(vista, "¡Pedido confirmado exitosamente!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            vista.dispose();
-        } else {
-            JOptionPane.showMessageDialog(vista, "Error al guardar el pedido en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        
-        String resumen = "Pedido confirmado a nombre de: " + nombre + " " + apellido + "\n"
-                       + "Telefono: " + telefono + "\n"
-                       + "Pago: " + metodoPago + "\n"
-                       + "Entrega: " + metodoEntrega;
-                       
-        if(vista.rbDelivery.isSelected()){
-             resumen += "\nEnviar a: " + direccion + " (" + casaDepto + ")";
+        for (CartItem item : carrito.getItems()) {
+            int stockActual = productDAO.getStockByName(item.getProductName());
+            if (stockActual < 0) {
+                JOptionPane.showMessageDialog(vista,
+                        "No se encontró el producto: " + item.getProductName(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (stockActual < item.getQuantity()) {
+                JOptionPane.showMessageDialog(vista,
+                        "Stock insuficiente para \"" + item.getProductName() + "\".\n"
+                        + "Disponible: " + stockActual + ", pedido: " + item.getQuantity(),
+                        "Sin stock", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
         }
 
-        JOptionPane.showMessageDialog(vista, resumen, "¡Éxito!", JOptionPane.INFORMATION_MESSAGE);
+        StringBuilder productosStr = new StringBuilder();
+        for (CartItem item : carrito.getItems()) {
+            if (productosStr.length() > 0) productosStr.append(", ");
+            productosStr.append(item.getProductName()).append(" x").append(item.getQuantity());
+        }
+
+        Order orden = new Order(0, nombre, apellido, telefono, metodoPago, metodoEntrega,
+                direccion, casaDepto, obs, productosStr.toString(), totalCarrito, null);
+
+        OrderDAO orderDAO = new OrderDAO();
+        int idOrden = orderDAO.create(orden);
+
+        if (idOrden < 0) {
+            JOptionPane.showMessageDialog(vista, "Error al guardar el pedido en la base de datos.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        for (CartItem item : carrito.getItems()) {
+            productDAO.decreaseStock(item.getProductName(), item.getQuantity());
+        }
+
+        carrito.clearCart();
+
         vista.dispose();
+        abrirInforme(idOrden);
+    }
+
+    private void abrirInforme(int idOrden) {
+        OrderDetailsController controlador = new OrderDetailsController(new Views.OrderDetails(), idOrden);
+        controlador.iniciar();
     }
 
     public void iniciar() {

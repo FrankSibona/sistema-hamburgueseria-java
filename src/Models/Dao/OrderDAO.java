@@ -1,88 +1,129 @@
 package Models.Dao;
 
-import Models.Entities.Product;
-import Models.Connection.DBConnection; 
-import java.sql.*;
+import Models.Connection.DBConnection;
+import Models.Entities.Order;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAO {
 
-    public boolean registrarVenta(String nombre, String apellido, String telefono, 
-                                  String pago, String entrega, String direccion, 
-                                  double total, List<Product> carrito) {
-                                      
-        Connection con = null;
-        PreparedStatement psPedido = null;
-        PreparedStatement psDetalle = null;
-        PreparedStatement psStock = null;
-        ResultSet rs = null;
-        boolean exito = false;
+    public int create(Order order) {
 
-        try {
-            con = DBConnection.getConnection(); 
-            con.setAutoCommit(false); 
-           
-            String sqlPedido = "INSERT INTO orders (customer_name, customer_lastname, phone, payment_method, delivery_method, address, total) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            psPedido = con.prepareStatement(sqlPedido, Statement.RETURN_GENERATED_KEYS);
-            psPedido.setString(1, nombre);
-            psPedido.setString(2, apellido);
-            psPedido.setString(3, telefono);
-            psPedido.setString(4, pago);
-            psPedido.setString(5, entrega);
-            psPedido.setString(6, direccion);
-            psPedido.setDouble(7, total);
-            psPedido.executeUpdate();
+        String sql = """
+                INSERT INTO orders
+                (customer_name, customer_lastname, phone,
+                payment_method, delivery_method,
+                address, house, description, products, total)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """;
 
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
+        ) {
 
-            rs = psPedido.getGeneratedKeys();
-            int idPedidoGenerado = 0;
-            if (rs.next()) {
-                idPedidoGenerado = rs.getInt(1);
+            stmt.setString(1, order.getCustomerName());
+            stmt.setString(2, order.getCustomerLastname());
+            stmt.setString(3, order.getPhone());
+            stmt.setString(4, order.getPaymentMethod());
+            stmt.setString(5, order.getDeliveryMethod());
+            stmt.setString(6, order.getAddress());
+            stmt.setString(7, order.getHouse());
+            stmt.setString(8, order.getDescription());
+            stmt.setString(9, order.getProducts());
+            stmt.setDouble(10, order.getTotal());
+
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                try (ResultSet keys = stmt.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        return keys.getInt(1);
+                    }
+                }
             }
-
-           
-            String sqlDetalle = "INSERT INTO order_details (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)";
-            String sqlStock = "UPDATE products SET stock = stock - ? WHERE id = ?";
-            
-            psDetalle = con.prepareStatement(sqlDetalle);
-            psStock = con.prepareStatement(sqlStock);
-
-            for (Product item : carrito) {
-
-                psDetalle.setInt(1, idPedidoGenerado);
-                psDetalle.setInt(2, item.getId()); 
-                
-                psDetalle.setInt(3, item.getCantidad()); 
-                psDetalle.setDouble(4, item.getPrice()); 
-                psDetalle.executeUpdate();
-
-
-                psStock.setInt(1, item.getCantidad());
-                psStock.setInt(2, item.getId());
-                psStock.executeUpdate();
-            }
-
-            con.commit(); 
-            exito = true;
+            return -1;
 
         } catch (SQLException e) {
-            System.out.println("Error en la transacción: " + e.getMessage());
-            try {
-                if (con != null) con.rollback();
-            } catch (SQLException ex) {
-                System.out.println("Error haciendo rollback: " + ex.getMessage());
-            }
-        } finally {
-            try {
-                if (con != null) con.setAutoCommit(true);
-                if (rs != null) rs.close();
-                if (psPedido != null) psPedido.close();
-                if (psDetalle != null) psDetalle.close();
-                if (psStock != null) psStock.close();
-            } catch (SQLException e) {
-                System.out.println("Error cerrando conexiones.");
-            }
+            System.out.println("Error creating order: " + e.getMessage());
+            return -1;
         }
-        return exito;
+    }
+
+    public List<Order> findAll() {
+
+        List<Order> orders = new ArrayList<>();
+
+        String sql = "SELECT * FROM orders ORDER BY created_at DESC";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()
+        ) {
+
+            while (rs.next()) {
+
+                orders.add(new Order(
+                        rs.getInt("id"),
+                        rs.getString("customer_name"),
+                        rs.getString("customer_lastname"),
+                        rs.getString("phone"),
+                        rs.getString("payment_method"),
+                        rs.getString("delivery_method"),
+                        rs.getString("address"),
+                        rs.getString("house"),
+                        rs.getString("description"),
+                        rs.getString("products"),
+                        rs.getDouble("total"),
+                        rs.getTimestamp("created_at")
+                ));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving orders: " + e.getMessage());
+        }
+
+        return orders;
+    }
+
+    public Order findById(int id) {
+
+        String sql = "SELECT * FROM orders WHERE id = ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Order(
+                            rs.getInt("id"),
+                            rs.getString("customer_name"),
+                            rs.getString("customer_lastname"),
+                            rs.getString("phone"),
+                            rs.getString("payment_method"),
+                            rs.getString("delivery_method"),
+                            rs.getString("address"),
+                            rs.getString("house"),
+                            rs.getString("description"),
+                            rs.getString("products"),
+                            rs.getDouble("total"),
+                            rs.getTimestamp("created_at")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving order by ID: " + e.getMessage());
+        }
+
+        return null;
     }
 }

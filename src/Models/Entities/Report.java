@@ -5,17 +5,17 @@ import java.sql.Timestamp;
 public class Report {
 
     private final int id;
-    private Timestamp created_at;
-    private int user_id;
-    private String report_type;
+    private Timestamp createdAt;
+    private int userId;
+    private String reportType;
     private String description;
 
     // Constructor
-    public Report(int id, Timestamp created_at, int user_id, String report_type, String description) {
+    public Report(int id, Timestamp createdAt, int userId, String reportType, String description) {
         this.id = id;
-        this.created_at = created_at;
-        this.user_id = user_id;
-        this.report_type = report_type;
+        this.createdAt = createdAt;
+        this.userId = userId;
+        this.reportType = reportType;
         this.description = description;
     }
 
@@ -24,16 +24,16 @@ public class Report {
         return id;
     }
 
-    public Timestamp getCreated_at() {
-        return created_at;
+    public Timestamp getCreatedAt() {
+        return createdAt;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public String getReport_type() {
-        return report_type;
+    public String getReportType() {
+        return reportType;
     }
 
     public String getDescription() {
@@ -41,16 +41,16 @@ public class Report {
     }
 
     // Setters
-    public void setCreated_at(Timestamp created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public void setReport_type(String report_type) {
-        this.report_type = report_type;
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
     }
 
     public void setDescription(String description) {

@@ -10,6 +10,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+  * DAO de usuarios del sistema.
+  * Maneja autenticación y gestión de usuarios.
+  *
+  * Uso:
+  * - Login (cuando esté activo)
+  * - Administración de cuentas
+  * 
+  * Nota: no lo necesitamos ahora, pero lo dejamos hecho para el examen final
+  */
 public class UserDAO {
 
     // Insertar un nuevo usuario

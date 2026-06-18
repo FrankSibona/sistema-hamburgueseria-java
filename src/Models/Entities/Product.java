@@ -7,9 +7,11 @@ public class Product {
     private String description;
     private double price;
     private String category;
+    private String imagePath;
     private int cantidad;
 
-    // Constructor
+    public Product() {
+    }
 
     public Product(int id, String name, int stock, String description, double price, String category) {
         this.id = id;
@@ -20,7 +22,16 @@ public class Product {
         this.category = category;
     }
 
-    // Getters y Setters
+    public Product(int id, String name, int stock, String description, double price, String category, String imagePath) {
+        this.id = id;
+        this.name = name;
+        this.stock = stock;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.imagePath = imagePath;
+    }
+
     public int getId() {
         return id;
     }
@@ -68,10 +79,19 @@ public class Product {
     public void setCategory(String category) {
         this.category = category;
     }
-    
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     public int getCantidad() {
         return cantidad;
     }
+
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
